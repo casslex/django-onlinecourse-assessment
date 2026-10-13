@@ -1,0 +1,1 @@
+{% extends 'onlinecourse/base.html' %}{% block content %}<div class="card p-4 mx-auto" style="max-width:600px"><h1 class="h3">Create account</h1><form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">Register</button></form></div>{% endblock %}

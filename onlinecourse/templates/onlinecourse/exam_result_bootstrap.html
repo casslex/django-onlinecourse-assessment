@@ -1,0 +1,12 @@
+{% extends 'onlinecourse/base.html' %}
+{% block title %}Exam results — {{ course.name }}{% endblock %}
+{% block content %}
+<p class="text-secondary mb-2">{{ course.name }} · Course assessment</p>
+<div class="alert {% if passed %}alert-success{% else %}alert-danger{% endif %} p-4">
+<h1 class="h2">{% if passed %}Congratulations, {{ user.username }}!{% else %}Keep learning, {{ user.username }}!{% endif %}</h1>
+<p class="mb-2">{% if passed %}You successfully passed the exam.{% else %}You need at least 70% to pass. Review the answers and try again.{% endif %}</p>
+<div class="d-flex gap-4 align-items-center"><strong class="fs-3">Score: {{ score|floatformat:0 }}%</strong><span>{{ earned }} / {{ total }} points</span><span class="badge {% if passed %}text-bg-success{% else %}text-bg-danger{% endif %}">{% if passed %}PASSED{% else %}TRY AGAIN{% endif %}</span></div></div>
+<h2 class="h4 mb-3">Exam results</h2>
+{% for result in results %}<article class="card p-3 mb-3"><div class="d-flex justify-content-between gap-2"><h3 class="h6">{{ forloop.counter }}. {{ result.question.content }}</h3><span class="badge align-self-start {% if result.correct %}text-bg-success{% else %}text-bg-danger{% endif %}">{% if result.correct %}Correct · {{ result.question.grade }} points{% else %}Incorrect · 0 points{% endif %}</span></div>
+{% for item in result.choices %}<div class="choice {% if item.choice.is_correct %}correct{% elif item.selected %}incorrect{% else %}muted{% endif %}">{% if item.selected %}☑{% else %}☐{% endif %} {{ item.choice.content }} {% if item.choice.is_correct %}<small class="text-success ms-2">Correct answer</small>{% endif %}{% if item.selected %}<small class="ms-2">Your selection</small>{% endif %}</div>{% endfor %}</article>{% endfor %}
+<a class="btn btn-primary" href="{% url 'onlinecourse:course_details' course.id %}">Back to course / Retake exam</a>{% endblock %}

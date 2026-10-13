@@ -1,0 +1,17 @@
+{% extends 'onlinecourse/base.html' %}
+{% block title %}{{ course.name }}{% endblock %}
+{% block content %}
+<h1>{{ course.name }}</h1><p class="lead">{{ course.description }}</p>
+<h2 class="h4 mt-4">Course lessons</h2>
+{% for lesson in course.lesson_set.all %}
+<article class="card p-4 mb-3"><h3 class="h5">Lesson {{ forloop.counter }}: {{ lesson.title }}</h3><p class="mb-0">{{ lesson.content|linebreaksbr }}</p></article>
+{% empty %}<p>No lessons yet.</p>{% endfor %}
+{% if is_enrolled %}
+<section class="card p-4 mt-4"><h2 class="h3">Course assessment</h2><p>Select all correct answers for each question. A score of 70% or higher passes.</p>
+<form action="{% url 'onlinecourse:submit' course.id %}" method="post">{% csrf_token %}
+{% for question in questions %}<fieldset class="mb-4"><legend class="h5">{{ forloop.counter }}. {{ question.content }} <span class="badge text-bg-secondary">{{ question.grade }} points</span></legend>
+{% for choice in question.choice_set.all %}<div class="form-check my-2"><input class="form-check-input" type="checkbox" name="choice_{{ question.id }}" id="choice_{{ choice.id }}" value="{{ choice.id }}"><label class="form-check-label" for="choice_{{ choice.id }}">{{ choice.content }}</label></div>{% endfor %}</fieldset>{% endfor %}
+{% if questions %}<button class="btn btn-primary btn-lg" type="submit">Submit exam</button>{% endif %}</form></section>
+{% elif user.is_authenticated %}<form method="post" action="{% url 'onlinecourse:enroll' course.id %}">{% csrf_token %}<button class="btn btn-primary">Enroll and take exam</button></form>
+{% else %}<a class="btn btn-primary" href="{% url 'onlinecourse:login' %}?next={{ request.path }}">Log in to enroll</a>{% endif %}
+{% endblock %}

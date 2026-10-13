@@ -1,0 +1,2 @@
+{% extends 'onlinecourse/base.html' %}
+{% block content %}<h1 class="mb-4">Explore courses</h1><div class="row g-4">{% for course in course_list %}<div class="col-md-6"><article class="card h-100 p-4"><h2 class="h4">{{ course.name }}</h2><p>{{ course.description }}</p><p class="text-secondary">{{ course.lesson_set.count }} lessons · {{ course.total_enrollment }} learners</p><a class="btn btn-primary" href="{% url 'onlinecourse:course_details' course.id %}">View course</a></article></div>{% empty %}<p>No courses available yet.</p>{% endfor %}</div>{% endblock %}
